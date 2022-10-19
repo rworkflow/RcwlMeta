@@ -17,3 +17,17 @@ knitr::opts_chunk$set(
 ```{r setup}
 library(RcwlMeta)
 ```
+
+## Example
+```{r}
+bwaAlign <- cwlLoad("bwaAlign")
+
+bwaAlign <- addMeta(bwaAlign, "align", "align reads to reference genome",
+                    inputLabels = c("threads", "readgroup", "reference", "read1", "read2"),
+                    inputDocs = c("number of threads", "read groups", "reference genome", "read pair1", "read pair2"),
+                    stepLabels = c(bwa = "bwa"),
+                    stepDocs = c(bwa = "bwa alignment"))
+
+cat(meta2md(bwaAlign))
+
+```
