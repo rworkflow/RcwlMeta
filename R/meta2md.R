@@ -9,7 +9,7 @@ meta2md <- function(cwl, plotdir = "plots"){
     title <- paste("##", mt$label)
     des <- mt$doc
 
-    mtime <- mt$extensions$date  ## for data recipe
+    mtime <- mt$extensions$`$rud`$date  ## for data recipe
 
     nn <- deparse(substitute(cwl))
     if (is.null(mtime)) {
@@ -29,12 +29,12 @@ meta2md <- function(cwl, plotdir = "plots"){
 
     header <- paste("---", paste("title:", mt$label),
                     paste("description:", des),
-                    paste("Author:", cwl@extensions$author),
+                    paste("Author:", cwl@extensions$`$rud`$author),
                     paste("Last updated:", sub("\\s.*", "", mtime)),
                     "---", sep = "\n")
 
-    if(!is.null(mt$extension$url)) {  ## add data source url for data recipe (ReUseData)
-        des <- paste0(des, "\n", "Data source: ", mt$extension$url)
+    if(!is.null(mt$extensions$`$rud`$url)) {  ## add data source url for data recipe (ReUseData)
+        des <- paste0(des, "\n", "Data source: ", paste0("<", mt$extension$`$rud`$url, ">", collapse = "; "))
     }
 
     md <- paste(header, title, des,
@@ -49,8 +49,8 @@ meta2md <- function(cwl, plotdir = "plots"){
     }
     md <- gsub("character\\(0\\)", " ", md)
 
-    if(!is.null(mt$extension$example)) {  ## add example code for data recipe (ReUseData)
-        md <- paste(md, "## Example:", "```", mt$extension$example, "```\n", sep="\n")
+    if(!is.null(mt$extension$`$rud`$example)) {  ## add example code for data recipe (ReUseData)
+        md <- paste(md, "## Example:", "```", mt$extension$`$rud`$example, "```\n", sep="\n")
     }
     
     return(md)

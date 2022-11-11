@@ -18,6 +18,6 @@ Imports:
     Rcwl,
     basilisk,
     DiagrammeR,
-    DiagrammeR
+    DiagrammeRsvg
 StagedInstall: no
 VignetteBuilder: knitr

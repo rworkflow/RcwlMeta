@@ -1,5 +1,8 @@
-
+#' @rdname addMeta
+#' @return `meta()`: return a list of all available meta information
+#'     for the `cwl` object.
 #' @export
+#' 
 meta <- function(cwl){
     idoc <- lapply(cwl@inputs, function(x)list(label = x@label, doc = x@doc))
     odoc <- lapply(cwl@outputs, function(x)list(label = x@label, doc = x@doc))
@@ -21,6 +24,7 @@ meta <- function(cwl){
     return(metalist)
 }
 
+#' @rdname addMeta
 #' @export
 "meta<-" <- function(cwl, value){
     if(!is.null(value$label))
@@ -54,8 +58,60 @@ meta <- function(cwl){
     return(cwl)
 }
 
+#' addMeta
+#' Add or change meta information for a cwl recipe.
+#' @rdname addMeta
+#' @aliases addMeta meta
+#' @param cwl `cwlProcess` object for data or tool
+#'     recipe. `cwlWorkflow` object for a pipeline recipe.
+#' @param label Character string specifying a label for the
+#'     recipe. E.g., "bwa align", "gencode annotation".
+#' @param doc Character string describing the recipe. E.g,
+#'     "Align reads to reference genome".
+#' @param inputLabels Vector of character string, specifying labels
+#'     for each input parameter.
+#' @param inputDocs Vector of character string as descriptions for
+#'     each input parameter.
+#' @param outputLabels Vector of character string, specifying labels
+#'     for each output parameter.
+#' @param outputDocs Vector of character string as descriptions for
+#'     each output parameter.
+#' @param stepLabels Vector of character string, specifying labels for
+#'     each step. Use only if `cwl` is a `cwlWorkflow` object.
+#' @param stepDocs Vector of character string as description for each
+#'     step. Use only if `cwl` is a `cwlWorkflow` object.
+#' @param extensions A list of character strings. Can be used to add
+#'     meta information about the recipe. Generally, add fields of
+#'     information that does not require execution as part of the
+#'     recipe evaluation. for information about "author", "url",
+#'     "date", "example", use the exact names as list names as shown
+#'     in examples, so that they can be correctly passed into
+#'     corresponding fields in markdown file when using
+#'     `meta2md`. Other information can be added as a list element
+#'     with arbitrary names. 
+#' @return `addMeta()`: `cwlProcess` or `cwlWorkflow` object, with added meta
+#'     information, which can be returned using `meta(cwl)`. Meta
+#'     information can be converted into markdown file with `meta2md`
+#'     function.
+#' @examples
+#' rcp <- ReUseData::recipeLoad("gencode_annotation")
+#' meta(rcp)
+#' rcp1 <- addMeta(cwl = rcp,
+#'                 label = "",
+#'                 doc = "An empty description line", 
+#'                 inputLabels = c("input label1", "input label2"),
+#'                 inputDocs = c("input description 1", "input description 2"), 
+#'                 outputLabels = c("output label1"),
+#'                 outputDocs = c("output description 1"), 
+#'                 extensions = list(author = "recipe author's name",
+#'                                   url = "http://ftp.ebi.ac.uk/pub/databases/gencode/",
+#'                                   date = as.character(Sys.Date()),
+#'                                   example = "An example chunk of code that was coverted into md format"))
+#' meta(rcp1)
+#' cat(meta2md(rcp1))
 #' @export
-addMeta <- function(cwl, label, doc,
+
+addMeta <- function(cwl, label = character(), doc = character(),
                     inputLabels = character(),
                     inputDocs = character(),
                     outputLabels = character(),
@@ -106,6 +162,6 @@ addMeta <- function(cwl, label, doc,
                       inputs = ilist,
                       outputs = olist,
                       steps = slist,
-                      extensions = extensions)
+                      extensions = list(`$rud` = extensions))
     return(cwl)
 }
