@@ -2,10 +2,19 @@
 % Please edit documentation in R/meta2md.R
 \name{meta2md}
 \alias{meta2md}
-\title{Meta information to markdown}
+\title{meta2md
+Meta information to markdown}
 \usage{
-meta2md(cwl, plotdir = "plots")
+meta2md(cwl, outdir = ".", prefix = deparse(substitute(cwl)))
+}
+\arguments{
+\item{cwl}{the \code{cwlProcess} or \code{cwlWorkflow} object}
+
+\item{outdir}{the output file path for the to-be-generated figure and md files}
+
+\item{prefix}{the filename for to-be-generated .svg file and .md file}
 }
 \description{
+meta2md
 Meta information to markdown
 }
