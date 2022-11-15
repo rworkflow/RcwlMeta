@@ -195,11 +195,16 @@ plotCP <- function(cwl, layout = "tree", ...){
     ntable <- data.frame(id = NodeID, label = nodes, shape = shape)
     ntable <- data.frame(ntable, id_ext = ntable$id)
 
-    etable <- rbind(
-        data.frame(from = ntable$id[match(Inputs, ntable$label)],
-                   to = ntable$id[match(cmd, ntable$label)]),
-        data.frame(to = ntable$id[match(Outputs, ntable$label)],
-                   from = ntable$id[match(cmd, ntable$label)]))
+    etable <- data.frame(to = ntable$id[match(Outputs, ntable$label)],
+                         from = ntable$id[match(cmd, ntable$label)])
+    if (!is.null(Inputs))
+        etable <- rbind(data.frame(from = ntable$id[match(Inputs, ntable$label)],
+                                   to = ntable$id[match(cmd, ntable$label)]), etable)
+    ## etable <- rbind(
+    ##     data.frame(from = ntable$id[match(Inputs, ntable$label)],
+    ##                to = ntable$id[match(cmd, ntable$label)]),
+    ##     data.frame(to = ntable$id[match(Outputs, ntable$label)],
+    ##                from = ntable$id[match(cmd, ntable$label)]))
     
     graph <- create_graph()
     graph <- add_nodes_from_table(graph, ntable, label_col = "label")

@@ -28,14 +28,18 @@ meta2md <- function(cwl, outdir = ".", prefix = deparse(substitute(cwl))){
 
     ## table for inputs/outputs 
     itypes <- lapply(inputs(cwl), function(x) paste(x@type, collapse=";"))
-    otypes <- lapply(outputs(cwl), function(x) paste(x@type, collapse=";"))
     itable <- cbind(do.call(rbind, mt$inputs), do.call(rbind, itypes))
     itable <- itable[, c(1,3,2), drop=FALSE]
+    otypes <- lapply(outputs(cwl), function(x) paste(x@type, collapse=";"))
     otable <- cbind(do.call(rbind, mt$outputs), do.call(rbind, otypes))
     otable <- otable[, c(1,3,2), drop=FALSE]
-    colnames(itable) <- colnames(otable) <- c("label", "type", "description")
-    inputs <- paste(knitr::kable(itable), collapse = "\n")
+    colnames(otable) <- c("label", "type", "description")
     outputs <- paste(knitr::kable(otable), collapse = "\n")
+
+    if (!is.null(itable)) {
+        colnames(itable) <- colnames(otable)
+        inputs <- paste(knitr::kable(itable), collapse = "\n")
+    }
 
     ## header
     header <- paste("---", paste("title:", mt$label),
@@ -53,7 +57,7 @@ meta2md <- function(cwl, outdir = ".", prefix = deparse(substitute(cwl))){
     md <- paste(header, title, des,
                 "## plot",
                 paste0("![", title, "](/plots/",prefix, ".svg", ")"),
-                "## Inputs", inputs,
+                "## Inputs", ifelse(!is.null(itable), inputs, ""),
                 "## Outputs", outputs, sep = "\n")
 
     ## add step info for workflow recipes (RcwlPipelines)
