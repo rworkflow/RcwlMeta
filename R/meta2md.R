@@ -42,7 +42,7 @@ meta2md <- function(cwl, outdir = ".", prefix = deparse(substitute(cwl))){
     }
 
     ## header
-    header <- paste("---", paste("title:", mt$label),
+    header <- paste("---", paste("title:", gsub("_", " ", mt$label)),
                     paste("description:", des),
                     paste("Author:", cwl@extensions$`$rud`$author),
                     paste("Last updated:", sub("\\s.*", "", mtime)),
