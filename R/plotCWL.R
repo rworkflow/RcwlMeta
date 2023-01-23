@@ -1,7 +1,7 @@
 #' plotCWL
 #'
-#' Function to plot cwlWorkflow object.
-#' @param cwl A cwlWorkflow object to plot
+#' Function to plot `cwlProcess` or `cwlWorkflow` object.
+#' @param cwl A `cwlProcess` or `cwlWorkflow` object
 #' @param output A string specifying the output type. An option
 #'     inherits from `render_graph` and can also be "mermaid".
 #' @param layout Layout from `render_graph`.

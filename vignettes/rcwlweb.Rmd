@@ -1,0 +1,16 @@
+```{r}
+library(ReUseData)
+library(Rcwl)
+devtools::load_all("RcwlMeta")
+setwd("/home/qian/workspace")
+
+recipeUpdate(force=TRUE)
+rcps <- list.files("~/workspace/ReUseDataRecipes/", pattern = ".R")
+rcps <- rcps[rcps != "dataGen.R"]
+rcps <- gsub(".R$", "", rcps)
+recipeLoad(rcps, return = TRUE)
+
+for (i in seq_along(rcps)) {
+    mt <- meta2md(eval(parse(text = rcps[i])), outdir = "rcwlweb_rcps", prefix = rcps[i])
+}
+

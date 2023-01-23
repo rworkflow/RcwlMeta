@@ -1,10 +1,14 @@
-#' meta2md
-#' Meta information to markdown
-#' @param cwl the `cwlProcess` or `cwlWorkflow` object
-#' @param outdir the output file path for the to-be-generated figure and md files
-#' @param prefix the filename for to-be-generated .svg file and .md file
+#' meta2md Convert meta information of recipes to markdown file
+#' @param cwl the `cwlProcess` or `cwlWorkflow` object. E.g., the
+#'     `Rcwl` workflows or tools from `RcwlPipelines::cwlSearch()` or
+#'     data recipes from `ReUseData::recipeSearch()`.
+#' @param outdir the output file path for the to-be-generated figure
+#'     and md files
+#' @param prefix the filename for to-be-generated .svg file and .md
+#'     file
 #' @importFrom DiagrammeRsvg export_svg
 #' @importFrom knitr kable
+#' @importFrom RcwlPipelines cwlSearch
 #' @export
 
 meta2md <- function(cwl, outdir = ".", prefix = deparse(substitute(cwl))){
@@ -13,12 +17,11 @@ meta2md <- function(cwl, outdir = ".", prefix = deparse(substitute(cwl))){
     des <- mt$doc
 
     mtime <- mt$extensions$`$rud`$date  ## for data recipe
-
     if (is.null(mtime)) {
         if(is(cwl, "cwlWorkflow")){
-            mtime <- mcols(cwlSearch(paste0("pl_", prefix)))$mtime
+            mtime <- mcols(RcwlPipelines::cwlSearch(paste0("pl_", prefix)))$mtime
         }else{
-            mtime <- mcols(cwlSearch(paste0("tl_", prefix)))$mtime
+            mtime <- mcols(RcwlPipelines::cwlSearch(paste0("tl_", prefix)))$mtime
         }
     }
     ## plot
@@ -48,7 +51,10 @@ meta2md <- function(cwl, outdir = ".", prefix = deparse(substitute(cwl))){
                     paste("Last updated:", sub("\\s.*", "", mtime)),
                     paste("type: article"),
                     "---", sep = "\n")
-    
+
+    ## add link to recipe source code
+    des <- paste0(des, "<br>Recipe source code: ",
+                  paste0("<", "https://github.com/rworkflow/ReUseDataRecipe/blob/master/", mt$label, ".R", ">"))
     ## add data source url for data recipe (ReUseData)
     if(!is.null(mt$extensions$`$rud`$url)) { 
         des <- paste0(des, "<br>Data source: ", paste0("<", mt$extension$`$rud`$url, ">", collapse = "; "))

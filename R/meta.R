@@ -94,6 +94,20 @@ meta <- function(cwl){
 #'     information can be converted into markdown file with `meta2md`
 #'     function.
 #' @examples
+#' library(RcwlPipelines)
+#' cwlSearch(c("bwa", "align"))
+#' bwaAlign <- RcwlPipelines::cwlLoad("pl_bwaAlign")
+#' bwaAlign <- addMeta(cwl = bwaAlign,
+#'                     label = "align",
+#'                     doc = "align reads to reference genome",
+#'                     inputLabels = c("threads", "readgroup", "reference", "read1", "read2"),
+#'                     inputDocs = c("number of threads", "read groups", "reference genome", "read pair1", "read pair2"),
+#'                     outputLabels = c("Bam", "Idx"),
+#'                     outputDocs = c("outputbam file", "index file"),
+#'                     stepLabels = c(bwa = "bwa"),
+#'                     stepDocs = c(bwa = "bwa alignment"))
+#' cat(meta2md(bwaAlign))
+
 #' rcp <- ReUseData::recipeLoad("gencode_annotation")
 #' meta(rcp)
 #' rcp1 <- addMeta(cwl = rcp,
