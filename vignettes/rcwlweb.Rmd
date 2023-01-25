@@ -1,3 +1,31 @@
+
+## RcwlPipelines
+```{r}
+library(RcwlPipelines)
+rcps <- list.files("../rcwlrecipes/Rcwl", full.names = TRUE)
+
+rcp_pl <- rcps[grep("pl_", rcps)]
+for (i in seq_along(rcp_pl)) {
+    cwl <- cwlLoad(rcp_pl[i])
+    lab <- sub(pref, "", sub(".R$", "", basename(rcp_pl[i])))
+    meta(cwl)$label <- lab
+    mt <- meta2md(cwl, outdir = "md", prefix = lab, gitsource = "RcwlRecipes", pref="Rcwl/pl_")
+}
+
+
+meta <- read.csv("../rcwlrecipes/cwlMeta.csv", row.names = 1)
+rn <- rownames(meta)
+idx <- grep("pl_", rn)
+pln <- sub("pl_", "", rn[idx])
+pln_url <- paste0("[", pln, "](", pln, ".html)")
+rownames(meta)[idx] <- pln_url
+tbl <- knitr::kable(meta)
+tbl <- paste0(c("# Pipelines & tools\n", tbl), collapse="\n")
+write(tbl, "md/readme.md")
+
+```
+
+## DataRecipes
 ```{r}
 library(ReUseData)
 library(Rcwl)
@@ -14,3 +42,4 @@ for (i in seq_along(rcps)) {
     mt <- meta2md(eval(parse(text = rcps[i])), outdir = "rcwlweb_rcps", prefix = rcps[i])
 }
 
+```

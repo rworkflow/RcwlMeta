@@ -11,7 +11,8 @@
 #' @importFrom RcwlPipelines cwlSearch
 #' @export
 
-meta2md <- function(cwl, outdir = ".", prefix = deparse(substitute(cwl))){
+meta2md <- function(cwl, outdir = ".", prefix = deparse(substitute(cwl)),
+                    gitsource = "ReUseDataRecipe", pref = ""){
     mt <- meta(cwl)
     title <- paste("##", mt$label)
     des <- mt$doc
@@ -29,8 +30,14 @@ meta2md <- function(cwl, outdir = ".", prefix = deparse(substitute(cwl))){
     pl <- plotCWL(cwl)
     write(export_svg(pl), file.path(outdir, paste0(prefix, ".svg")))
 
-    ## table for inputs/outputs 
-    itypes <- lapply(inputs(cwl), function(x) paste(x@type, collapse=";"))
+    ## table for inputs/outputs
+    itypes <- lapply(inputs(cwl), function(x) {
+        if(is(x@type, "InputArrayParam")){
+            x@type@type
+        }else{
+            paste(x@type, collapse=";")
+        }
+    })
     itable <- cbind(do.call(rbind, mt$inputs), do.call(rbind, itypes))
     itable <- itable[, c(1,3,2), drop=FALSE]
     otypes <- lapply(outputs(cwl), function(x) paste(x@type, collapse=";"))
@@ -54,7 +61,7 @@ meta2md <- function(cwl, outdir = ".", prefix = deparse(substitute(cwl))){
 
     ## add link to recipe source code
     des <- paste0(des, "<br>Recipe source code: ",
-                  paste0("<", "https://github.com/rworkflow/ReUseDataRecipe/blob/master/", mt$label, ".R", ">"))
+                  paste0("<", "https://github.com/rworkflow/", gitsource, "/blob/master/", pref, mt$label, ".R", ">"))
     ## add data source url for data recipe (ReUseData)
     if(!is.null(mt$extensions$`$rud`$url)) { 
         des <- paste0(des, "<br>Data source: ", paste0("<", mt$extension$`$rud`$url, ">", collapse = "; "))
